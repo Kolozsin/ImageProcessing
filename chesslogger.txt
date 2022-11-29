@@ -1,0 +1,146 @@
+
+    internal interface IPiece
+    {
+        Position getPosition();
+        void setPosition(Position position);
+
+        void createAttackList(GameBoard gameBoard);
+
+        bool getIsWhite();
+
+        List<Position> getAttackList();
+
+    }
+
+    internal abstract class Piece : IPiece
+    {
+        protected bool isWhite;
+        protected List<Position> attackablePosition = new List<Position>();
+        protected Position position;
+        public abstract void createAttackList(GameBoard gameBoard);
+        public List<Position> getAttackList()
+        {
+            return this.attackablePosition;
+        }
+        public Position getPosition()
+        {
+            return this.position;
+        }
+        public bool getIsWhite()
+        {
+            return isWhite;
+        }
+
+        public void setPosition(Position position)
+        {
+            this.position = position;
+        }
+        protected Piece(bool isWhite, Position position)
+        {
+            this.isWhite = isWhite;
+            this.position = position;
+        }
+        public override string ToString()
+        {
+            return this.GetType().Name + this.position.ToString();
+        }
+    }
+
+}
+
+internal class Pawn : Piece
+{
+    public Pawn(bool isWhite, Position position) : base(isWhite, position) { }
+
+    public override void createAttackList(GameBoard gameBoard)
+    {
+        this.attackablePosition.Clear();
+        if (isWhite)
+        {
+            if (this.position.x < 7 & !gameBoard.blackPieceList.Exists(Piece => Piece.getPosition().y == this.position.y & Piece.getPosition().x == this.position.x + 1))
+                this.attackablePosition.Add(new Position(this.position.x + 1, this.position.y));
+            if (gameBoard.blackPieceList.Exists(Piece => Piece.getPosition().y == this.position.y + 1 & Piece.getPosition().x == this.position.x + 1))
+                this.attackablePosition.Add(new Position(this.position.x + 1, this.position.y + 1));
+            if (gameBoard.blackPieceList.Exists(Piece => Piece.getPosition().y == this.position.y - 1 & Piece.getPosition().x == this.position.x + 1))
+                this.attackablePosition.Add(new Position(this.position.x + 1, this.position.y - 1));
+        }
+        else
+        {
+            if (this.position.x > 0 & !gameBoard.whitePieceList.Exists(Piece => Piece.getPosition().y == this.position.y & Piece.getPosition().x == this.position.x - 1))
+                this.attackablePosition.Add(new Position(this.position.x - 1, this.position.y));
+            if (gameBoard.whitePieceList.Exists(Piece => Piece.getPosition().y == this.position.y + 1 & Piece.getPosition().x == this.position.x - 1))
+                this.attackablePosition.Add(new Position(this.position.x - 1, this.position.y + 1));
+            if (gameBoard.whitePieceList.Exists(Piece => Piece.getPosition().y == this.position.y - 1 & Piece.getPosition().x == this.position.x - 1))
+                this.attackablePosition.Add(new Position(this.position.x - 1, this.position.y - 1));
+        }
+    }
+}
+
+internal class Rook : Piece
+{
+    public Rook(bool isWhite, Position position) : base(isWhite, position) { }
+
+    public override void createAttackList(GameBoard gameBoard)
+    {
+        Position checkedPosition = new Position(this.position.x, this.position.y);      
+        while (!gameBoard.whitePieceList.Exists(piece => piece.getPosition().y == checkedPosition.y + 1 & piece.getPosition().x == checkedPosition.x)    //Nincs tőle jobbra fehérbábú
+            & checkedPosition.y + 1 < 7                                                                                                                  //Nem fut le a pályáról jobbra
+            & !gameBoard.blackPieceList.Exists(piece => piece.getPosition().y == checkedPosition.y + 1 & piece.getPosition().x == checkedPosition.x))    //Nincs tőle jobbra fekete bábú
+        {
+            this.attackablePosition.Add(new Position(checkedPosition.x, ++checkedPosition.y));
+        }
+        checkedPosition = new Position(this.position.x, this.position.y);
+        while (!gameBoard.whitePieceList.Exists(piece => piece.getPosition().y == checkedPosition.y - 1 & piece.getPosition().x == checkedPosition.x)    //Nincs tőle balra fehérbábú
+           & checkedPosition.y - 1 > -1                                                                                                                 //Nem fut le a pályáról balra
+           & !gameBoard.blackPieceList.Exists(piece => piece.getPosition().y == checkedPosition.y - 1 & piece.getPosition().x == checkedPosition.x))    //Nincs tőle balra fekete bábú
+        {
+            this.attackablePosition.Add(new Position(checkedPosition.x, --checkedPosition.y));
+        }
+        checkedPosition = new Position(this.position.x, this.position.y);
+        while (!gameBoard.whitePieceList.Exists(piece => piece.getPosition().x == checkedPosition.x + 1 & piece.getPosition().y == checkedPosition.y)    //Nincs felette fehérbábú
+           & checkedPosition.x + 1  < 8                                                                                                                 //Nem fut le a pályáról felfele
+           & !gameBoard.blackPieceList.Exists(piece => piece.getPosition().y == checkedPosition.x + 1 & piece.getPosition().y == checkedPosition.y))    //Nincs felette fekete bábú
+        {
+            this.attackablePosition.Add(new Position(++checkedPosition.x, checkedPosition.y));
+        }
+        checkedPosition = new Position(this.position.x, this.position.y);
+        while (!gameBoard.whitePieceList.Exists(piece => piece.getPosition().x == checkedPosition.x - 1 & piece.getPosition().y == checkedPosition.y)    //Nincs felette fehérbábú
+           & checkedPosition.x + 1 < 8                                                                                                                 //Nem fut le a pályáról felfele
+           & !gameBoard.blackPieceList.Exists(piece => piece.getPosition().y == checkedPosition.x - 1 & piece.getPosition().y == checkedPosition.y))    //Nincs felette fekete bábú
+        {
+            this.attackablePosition.Add(new Position(++checkedPosition.x, checkedPosition.y));
+        }
+    }
+       
+}
+
+internal class GameBoard
+{
+    public List<Piece> blackPieceList;
+    public List<Piece> whitePieceList;
+    public List<Position> whiteAttacks;
+    public List<Position> blackAttacks;
+    public bool isWhiteTurn = true;
+
+    public GameBoard()
+    {
+
+    }
+}
+
+internal class Position
+{
+    Char[] letters = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
+    public int x, y;
+    bool isWhite = false;
+
+    public Position(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    public String toString()
+    {
+        return letters[y].ToString() + x.ToString();
+    }

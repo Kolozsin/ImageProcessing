@@ -1,0 +1,51 @@
+[
+ [[  0   0 398   0]]
+ [[249 399 249   1]]
+ [[299 399 299   1]]
+ [[ 49 399  49   1]]
+ [[149 399 149   1]]
+ [[  0 150 398 150]]
+ [[  0 200 398 200]]
+ [[  0 300 398 300]]
+ [[  0 100 398 100]]
+ [[  0 350 398 350]]
+ [[  0  50 398  50]]
+ [[199 399 199   1]]
+ [[  0 250 398 250]]
+ [[ 99 399  99   1]]
+ [[349 399 349   1]]
+]
+ 
+ 
+Elso elem:     X0 <- vegpontja a line-nak x tengelyen  		|oszlopszámot indikál|
+Masodik elem:  Y0 <- Végpontja a line-nak y tengelyen  		|sorszámot indikál AZ ALSÓT|
+Harmadik elem: X1 <- kezdopontja a line-nak x tengelyen 	|oszlopszámot indikál|
+Negyedik elem: Y1 <- kezdopontja a line-nak y tengelyen		|sorszámot indikál  A FELSŐT| 
+
+
+
+[array([1614, 1418, 1614,  169], dtype=int32),
+ array([ 864, 1368,  864,  169], dtype=int32),
+ array([ 414, 1364,  414,  173], dtype=int32),
+ array([1014, 1368, 1014,  169], dtype=int32),
+ array([   1, 1439,    1,    0], dtype=int32),
+ array([ 564, 1368,  564,  169], dtype=int32),
+ array([1464, 1368, 1464,  169], dtype=int32),
+ array([ 714, 1368,  714,  169], dtype=int32),
+ array([1314, 1368, 1314,  169], dtype=int32),
+ array([1164, 1367, 1164,  169], dtype=int32),
+ array([   2, 1282,    2, 1201], dtype=int32),
+ array([  2, 258,   2, 177], dtype=int32),
+ array([  2, 770,   2, 689], dtype=int32),
+ array([   2, 1026,    2,  945], dtype=int32),
+ array([  2, 514,   2, 433], dtype=int32),
+ array([  2, 125,   2,  64], dtype=int32)]
+
+
+
+Terv: 
+Beadom a python kódnak a képet, az visszadobja majd a pozíciókat a képről mégpedig a 4 sarkát a saktáblának
+Ezt C#-ból kezelem (leosztom 8-al az távokat és megkapom, hogy mik is a koordináták) ->cropolom, normalizálom-> kivonom az előző crop-olt normalizált-ból --> PROFIT?
+
+
+!Refactor: Amíg nem 9 darab él van addig filtereljünk ki a megadott fgv-el újra és újra
